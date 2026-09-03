@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Demon-Gatchi</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="game-viewport">
+    
+    <div class="panel left-panel">
+      <h2>ACTIONS</h2>
+      <div class="controls">
+        <button id="feed-btn" class="action-btn">FEED DEMON (-15%)</button>
+        </div>
+    </div>
+
+    <div class="center-stage">
+      <div id="pet-sprite">🥚</div>
+    </div>
+
+    <div class="panel right-panel">
+      <h2>DOOM METER</h2>
+      <div class="battery-container">
+        <div class="battery-cap"></div>
+        <div class="battery-body">
+          <div id="battery-fill"></div>
+        </div>
+      </div>
+      <div class="percentage-display"><span id="doom-text">0</span>%</div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

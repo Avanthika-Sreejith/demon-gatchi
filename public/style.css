@@ -1,0 +1,125 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #0d0d0d;
+  color: #ffffff;
+  font-family: monospace;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* 3-Column Split Viewport */
+.game-viewport {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100vh;
+  padding: 2rem;
+  position: relative;
+}
+
+.panel {
+  width: 250px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid #333;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+}
+
+.left-panel h2, .right-panel h2 {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  letter-spacing: 2px;
+  color: #888;
+}
+
+/* Center Stage (No Container Lines) */
+.center-stage {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+
+#pet-sprite {
+  font-size: 140px;
+  user-select: none;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+/* Action Buttons */
+.controls {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.action-btn {
+  width: 100%;
+  background-color: #222;
+  color: #fff;
+  border: 2px solid #555;
+  padding: 1rem;
+  font-family: monospace;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.action-btn:hover {
+  background-color: #333;
+  border-color: #888;
+}
+
+/* Battery Gauge Styling */
+.battery-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 300px;
+  width: 70px;
+}
+
+.battery-cap {
+  width: 30px;
+  height: 12px;
+  background-color: #444;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.battery-body {
+  width: 100%;
+  height: 100%;
+  border: 4px solid #444;
+  border-radius: 8px;
+  padding: 4px;
+  display: flex;
+  align-items: flex-end; /* Fills from bottom to top */
+  background-color: #151515;
+}
+
+#battery-fill {
+  width: 100%;
+  height: 0%; /* Dynamically controlled by JS */
+  background-color: #00ff66; /* Starts Green */
+  border-radius: 4px;
+  transition: height 0.3s ease, background-color 0.3s ease;
+}
+
+.percentage-display {
+  margin-top: 1rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
