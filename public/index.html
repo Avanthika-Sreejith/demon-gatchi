@@ -2,50 +2,83 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Demon-Gatchi</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Full-Screen Emergency Red Flash Overlay -->
   <div id="warning-overlay">
-    <div class="warning-text">⚠️ SYSTEM CRITICAL: DOOM AT MAXIMUM ⚠️</div>
+    <div class="warning-text">CRITICAL OVERLOAD</div>
   </div>
 
   <div class="game-viewport">
-    
-    <!-- LEFT PANEL: Controls & Logs -->
+    <!-- Left Panel: Actions & Difficulty -->
     <div class="panel left-panel">
-      <h2>ACTIONS</h2>
+      
+      <h3>CONTROLS</h3>
+
+      <div id="drag-prompt">DRAG & DROP TO USE</div>
       <div class="controls">
-        <button id="btn-feed" class="action-btn">FEED DEMON (-15%)</button>
-        <button id="btn-pet" class="action-btn">PET DEMON (-10%)</button>
-        <button id="btn-distract" class="action-btn">DISTRACT DEMON (-25%)</button>
+        <div class="btn-wrapper">
+          <button id="btn-feed" class="action-btn icon-only-btn" disabled>
+            <img src="/assets/icon_feed.png" id="drag-feed" alt="Feed Icon" class="pixel-icon-large" data-action="feed" draggable="true">
+            <span class="btn-label">FEED</span>
+            <span class="stat-tag">(-10%)</span>
+          </button>
+          <div id="cooldown-feed" class="cooldown-bar"></div>
+        </div>
+
+        <div class="btn-wrapper">
+          <button id="btn-pet" class="action-btn icon-only-btn" disabled>
+            <img src="/assets/icon_pet.png" id="drag-pet" alt="Pet Icon" class="pixel-icon-large" data-action="pet" draggable="true">
+            <span class="btn-label">PET</span>
+            <span class="stat-tag">(-5%)</span>
+          </button>
+          <div id="cooldown-pet" class="cooldown-bar"></div>
+        </div>
+
+        <div class="btn-wrapper">
+          <button id="btn-distract" class="action-btn icon-only-btn" disabled>
+            <img src="/assets/icon_distract.png" id="drag-distract" alt="Distract Icon" class="pixel-icon-large" data-action="distract" draggable="true">
+            <span class="btn-label">DISTRACT</span>
+            <span class="stat-tag">(-15%)</span>
+          </button>
+          <div id="cooldown-distract" class="cooldown-bar"></div>
+        </div>
       </div>
+
+      <h3 class="sub-header">DIFFICULTY</h3>
+      <div class="mode-selector">
+        <button class="mode-btn" data-speed="2000" data-desc="CASUAL: +1% / 2 sec (Slow Burn)">CASUAL</button>
+        <button class="mode-btn active" data-speed="1000" data-desc="NORMAL: +1% / 1 sec (Standard)">NORM</button>
+        <button class="mode-btn" data-speed="500" data-desc="HARDCORE: +1% / 0.5 sec (Chaos)">HARD</button>
+        <button class="mode-btn" id="btn-custom" data-speed="custom" data-desc="CUSTOM: User-defined rate">CUST</button>
+      </div>
+      <div id="difficulty-desc">NORMAL: +1% / 1 sec (Standard)</div>
     </div>
 
-    <!-- CENTER STAGE: Floating Pet & Glow -->
-<div class="center-stage">
-  <div id="pet-container" class="stage-egg-glow">
-    <img id="pet-sprite" class="size-stage1" src="/assets/stage1.png" alt="Demon-Gatchi Sprite" />
-  </div>
-  <div id="hatch-prompt">TAP TO AWAKEN</div>
-</div>
+    <!-- Center Stage: Sprite Viewport -->
+    <div class="center-stage">
+      <div id="pet-container" class="stage-egg-glow">
+        <img id="pet-sprite" class="size-stage1 tappable" src="/assets/stage1.png" alt="Demon-Gatchi Sprite" />
+      </div>
+      <div id="hatch-prompt">TAP TO AWAKEN</div>
+    </div>
 
-    <!-- RIGHT PANEL: Battery Gauge -->
+    <!-- Right Panel: Doom Meter & Mood -->
     <div class="panel right-panel">
-      <h2>DOOM METER</h2>
+      <h3>DOOM METER</h3>
       <div class="battery-container">
         <div class="battery-cap"></div>
         <div class="battery-body">
           <div id="battery-fill"></div>
         </div>
         <div class="percentage-display"><span id="doom-text">0</span>%</div>
+        <div id="mood-text">STATUS: DORMANT</div>
       </div>
     </div>
-
   </div>
 
   <script src="script.js"></script>
