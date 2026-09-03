@@ -1,25 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Demon-Gatchi</title>
-  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+  <!-- Full-Screen Emergency Red Flash Overlay -->
+  <div id="warning-overlay">
+    <div class="warning-text">⚠️ SYSTEM CRITICAL: DOOM AT MAXIMUM ⚠️</div>
+  </div>
+
   <div class="game-viewport">
     
+    <!-- LEFT PANEL: Controls & Logs -->
     <div class="panel left-panel">
       <h2>ACTIONS</h2>
       <div class="controls">
-        <button id="feed-btn" class="action-btn">FEED DEMON (-15%)</button>
-        </div>
+        <button id="btn-feed" class="action-btn">FEED DEMON (-15%)</button>
+        <button id="btn-pet" class="action-btn">PET DEMON (-10%)</button>
+        <button id="btn-distract" class="action-btn">DISTRACT DEMON (-25%)</button>
+      </div>
     </div>
 
-    <div class="center-stage">
-      <div id="pet-sprite">🥚</div>
-    </div>
+    <!-- CENTER STAGE: Floating Pet & Glow -->
+<div class="center-stage">
+  <div id="pet-container" class="stage-egg-glow">
+    <img id="pet-sprite" class="size-stage1" src="/assets/stage1.png" alt="Demon-Gatchi Sprite" />
+  </div>
+  <div id="hatch-prompt">TAP TO AWAKEN</div>
+</div>
 
+    <!-- RIGHT PANEL: Battery Gauge -->
     <div class="panel right-panel">
       <h2>DOOM METER</h2>
       <div class="battery-container">
@@ -27,8 +42,8 @@
         <div class="battery-body">
           <div id="battery-fill"></div>
         </div>
+        <div class="percentage-display"><span id="doom-text">0</span>%</div>
       </div>
-      <div class="percentage-display"><span id="doom-text">0</span>%</div>
     </div>
 
   </div>

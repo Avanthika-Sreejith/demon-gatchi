@@ -2,124 +2,321 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-family: 'Courier New', Courier, monospace;
 }
 
 body {
   background-color: #0d0d0d;
-  color: #ffffff;
-  font-family: monospace;
+  color: #fff;
   height: 100vh;
   overflow: hidden;
-}
-
-/* 3-Column Split Viewport */
-.game-viewport {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 100vh;
-  padding: 2rem;
-  position: relative;
-}
-
-.panel {
-  width: 250px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 2px solid #333;
-  border-radius: 12px;
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  z-index: 2;
-}
-
-.left-panel h2, .right-panel h2 {
-  font-size: 1.2rem;
-  margin-bottom: 1.5rem;
-  letter-spacing: 2px;
-  color: #888;
-}
-
-/* Center Stage (No Container Lines) */
-.center-stage {
-  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1;
 }
 
-#pet-sprite {
-  font-size: 140px;
-  user-select: none;
-  transition: transform 0.2s ease, filter 0.2s ease;
+/* Full-Screen Emergency Red Flash Overlay */
+#warning-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 0, 0, 0.35);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-/* Action Buttons */
-.controls {
-  width: 100%;
+#warning-overlay.active {
+  opacity: 1;
+  animation: flash 0.5s infinite alternate;
+}
+
+.warning-text {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 0 0 10px #ff0000;
+  letter-spacing: 3px;
+  text-align: center;
+}
+
+@keyframes flash {
+  0% { background-color: rgba(255, 0, 0, 0.2); }
+  100% { background-color: rgba(255, 0, 0, 0.55); }
+}
+
+/* 3-Column Layout */
+.game-viewport {
+  display: flex;
+  width: 90vw;
+  height: 85vh;
+  gap: 20px;
+}
+
+.panel {
+  background: #181818;
+  border: 2px solid #333;
+  border-radius: 8px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  align-items: center;
+}
+
+.left-panel, .right-panel {
+  flex: 1;
+}
+
+/* Flexbox Centered Stage */
+.center-stage {
+  flex: 2;
+  background: #121212;
+  border: 2px solid #2a2a2a;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Controls & Buttons */
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  margin-top: 20px;
 }
 
 .action-btn {
-  width: 100%;
-  background-color: #222;
-  color: #fff;
-  border: 2px solid #555;
-  padding: 1rem;
-  font-family: monospace;
+  background: #252525;
+  color: #00ffcc;
+  border: 2px solid #00ffcc;
+  padding: 15px;
   font-weight: bold;
-  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
-.action-btn:hover {
-  background-color: #333;
-  border-color: #888;
+.action-btn:hover:not(:disabled) {
+  background: #00ffcc;
+  color: #000;
 }
 
-/* Battery Gauge Styling */
+.action-btn:disabled {
+  background-color: #1a1a1a;
+  color: #555;
+  border-color: #333;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Battery Gauge */
 .battery-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 300px;
-  width: 70px;
+  margin-top: 20px;
 }
 
 .battery-cap {
   width: 30px;
-  height: 12px;
-  background-color: #444;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
+  height: 10px;
+  background: #444;
+  border-radius: 3px 3px 0 0;
 }
 
 .battery-body {
-  width: 100%;
-  height: 100%;
-  border: 4px solid #444;
-  border-radius: 8px;
-  padding: 4px;
+  width: 60px;
+  height: 200px;
+  border: 4px solid #fff;
+  border-radius: 6px;
   display: flex;
-  align-items: flex-end; /* Fills from bottom to top */
-  background-color: #151515;
+  align-items: flex-end;
+  padding: 2px;
+  background: #222;
 }
 
 #battery-fill {
   width: 100%;
-  height: 0%; /* Dynamically controlled by JS */
-  background-color: #00ff66; /* Starts Green */
-  border-radius: 4px;
+  height: 0%;
+  background-color: #00ff00;
   transition: height 0.3s ease, background-color 0.3s ease;
 }
 
 .percentage-display {
-  margin-top: 1rem;
+  margin-top: 15px;
   font-size: 1.5rem;
   font-weight: bold;
+}
+
+/* Dynamic Pet Container */
+#pet-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+  height: auto;
+  transition: filter 0.8s ease;
+  animation: float 2.5s infinite ease-in-out;
+}
+
+/* Dynamic Drop-Shadow Glows */
+.stage-egg-glow { filter: drop-shadow(0 0 35px rgba(186, 85, 211, 0.85)); }
+.stage-imp-glow { filter: drop-shadow(0 0 45px rgba(255, 105, 180, 0.9)); }
+.stage-beast-glow { filter: drop-shadow(0 0 60px rgba(255, 0, 0, 0.95)); }
+
+/* Sprite Base Styling */
+#pet-sprite {
+  object-fit: contain;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
+}
+
+/* Tappable Egg Hover Effect */
+#pet-sprite.tappable {
+  cursor: pointer;
+}
+
+#pet-sprite.tappable:hover {
+  transform: scale(1.08);
+}
+
+/* Scaled Up Sizes to Override Blank Asset Padding */
+.size-stage1 {
+  width: 220px;
+  height: 220px;
+}
+
+.size-stage2 {
+  width: 320px;
+  height: 320px;
+}
+
+.size-stage3 {
+  width: 420px;
+  height: 420px;
+}
+
+/* Hatching Burst / Wobble Animation */
+@keyframes hatch-burst {
+  0% { transform: scale(1) rotate(0deg); filter: brightness(1); }
+  20% { transform: scale(1.1) rotate(-18deg); filter: brightness(1.2); }
+  40% { transform: scale(1.1) rotate(18deg); filter: brightness(1.4); }
+  60% { transform: scale(1.2) rotate(-12deg); filter: brightness(2); }
+  80% { transform: scale(1.3) rotate(12deg); filter: brightness(3.5); }
+  100% { transform: scale(1) rotate(0deg); filter: brightness(1); }
+}
+
+.hatching {
+  animation: hatch-burst 0.6s ease-in-out !important;
+}
+
+/* High Doom Jitter Animation */
+.raging {
+  animation: jitter 0.15s infinite alternate linear !important;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes jitter {
+  0% { transform: translate(3px, 2px) rotate(0deg); }
+  100% { transform: translate(-3px, -2px) rotate(1.5deg); }
+}
+
+/* Arcade Text Prompt */
+#hatch-prompt {
+  position: absolute;
+  bottom: 40px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.85rem;
+  color: #00ffcc;
+  text-shadow: 0 0 8px rgba(0, 255, 204, 0.8);
+  letter-spacing: 2px;
+  pointer-events: none;
+  animation: pulse-text 1.5s infinite ease-in-out;
+  transition: opacity 0.4s ease;
+}
+
+/* Pulsing Fade Animation */
+@keyframes pulse-text {
+  0%, 100% { opacity: 0.3; transform: scale(0.98); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+/* Hide prompt class */
+#hatch-prompt.hidden {
+  display: none !important;
+  visibility: hidden !important;
+  animation: none !important;
+  opacity: 0 !important;
+}
+/* Responsive Mobile Styles */
+@media (max-width: 768px) {
+  body {
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
+    padding: 15px 0;
+  }
+
+  .game-viewport {
+    flex-direction: column;
+    width: 95vw;
+    height: auto;
+    gap: 15px;
+  }
+
+  /* Order: Pet Stage top, Controls middle, Gauge bottom */
+  .center-stage {
+    order: 1;
+    min-height: 300px;
+    padding: 20px 0;
+  }
+
+  .left-panel {
+    order: 2;
+    width: 100%;
+  }
+
+  .right-panel {
+    order: 3;
+    width: 100%;
+  }
+
+  /* Scaled Sprite Sizes for Phones */
+  .size-stage1 {
+    width: 150px;
+    height: 150px;
+  }
+
+  .size-stage2 {
+    width: 200px;
+    height: 200px;
+  }
+
+  .size-stage3 {
+    width: 250px;
+    height: 250px;
+  }
+
+  #hatch-prompt {
+    font-size: 0.7rem;
+    bottom: 15px;
+  }
+
+  .battery-body {
+    height: 120px;
+  }
 }
