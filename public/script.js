@@ -20,9 +20,9 @@ const btnDistract = document.getElementById('btn-distract');
 const modeBtns = document.querySelectorAll('.mode-btn');
 
 const cooldowns = {
-  feed: { btn: btnFeed, bar: document.getElementById('cooldown-feed'), time: 5000, active: false },
-  pet: { btn: btnPet, bar: document.getElementById('cooldown-pet'), time: 4000, active: false },
-  distract: { btn: btnDistract, bar: document.getElementById('cooldown-distract'), time: 6000, active: false }
+  feed: { btn: btnFeed, bar: document.getElementById('cooldown-feed'), time: 7000, active: false },
+  pet: { btn: btnPet, bar: document.getElementById('cooldown-pet'), time: 6000, active: false },
+  distract: { btn: btnDistract, bar: document.getElementById('cooldown-distract'), time: 7000, active: false }
 };
 
 let audioCtx = null;
@@ -110,7 +110,7 @@ const actionMap = {
     if (!hasHatched || cooldowns.feed.active) return;
     
     // 25% chance to fail (Math.random() < 0.25)
-    if (Math.random() < 0.40) {
+    if (Math.random() < 0.50) {
       playSound(150, 'sawtooth', 0.2); // Low rejection buzz
       setMood("STATUS: REJECTED! (0%)", true);
       triggerActionAnimation('/assets/stage2_reject.png', 1200);
@@ -142,7 +142,7 @@ const actionMap = {
       return;
     }
 
-    if (Math.random() < 0.40) {
+    if (Math.random() < 0.50) {
       playSound(150, 'sawtooth', 0.2);
       setMood("STATUS: BITTEN! (0%)", true);
       triggerActionAnimation('/assets/stage2_bitten.png', 1200);
@@ -162,7 +162,7 @@ const actionMap = {
   distract: () => {
     if (!hasHatched || cooldowns.distract.active) return;
 
-    if (Math.random() < 0.40) {
+    if (Math.random() < 0.50) {
       playSound(150, 'sawtooth', 0.2);
       setMood("STATUS: IGNORED! (0%)", true);
       triggerActionAnimation('/assets/stage2_ignore.png', 1200);
