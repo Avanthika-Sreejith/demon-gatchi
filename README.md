@@ -73,6 +73,9 @@ https://drive.google.com/drive/folders/1OahRZktsMaWty1QosHnnSPbPCVDmoNPq?usp=dri
 
 *Demonstrates game startup and tapping the dormant egg to hatch a cute demon pet. Highlights game controls (Feed, Pet, Distract) alongside difficulty settings and the rising Doom percentage meter. Showcases the pet's final Rage Mode—where petting backfires to add extra Doom—followed by high score submission to the Supabase leaderboard right before the OS-lock sequence triggers.*
 
+### Live Demo
+🔗 **Play Demon-Gatchi:** [[(https://demon-gatchi.vercel.app/)](https://demon-gatchi.vercel.app/)]
+
 
 ## Team Contributions
 - Avanthika Sreejith: Designed full-stack web application architecture, integrated Supabase database for arcade leaderboards, built dynamic multi-stage pet asset loading, wrote interactive UI styling, and configured web deployment pipelines for Vercel.
