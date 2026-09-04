@@ -6,6 +6,8 @@
   <title>Demon-Gatchi</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js" defer></script>
 </head>
 <body>
 
@@ -62,7 +64,7 @@
     <!-- Center Stage: Sprite Viewport -->
     <div class="center-stage">
       <div id="pet-container" class="stage-egg-glow">
-        <img id="pet-sprite" class="size-stage1 tappable" src="/assets/stage1.png" alt="Demon-Gatchi Sprite" />
+        <img id="pet-sprite" class="size-stage1 tappable" src="/assets/imp/stage1.png" alt="Demon-Gatchi Sprite" />
       </div>
       <div id="hatch-prompt">TAP TO AWAKEN</div>
     </div>
@@ -77,7 +79,14 @@
         </div>
         <div class="percentage-display"><span id="doom-text">0</span>%</div>
         <div id="mood-text">STATUS: DORMANT</div>
-      </div>
+
+        <!-- INSERT LEADERBOARD HERE -->
+        <div class="retro-leaderboard">
+          <div class="leaderboard-header">HIGH SCORES</div>
+          <ul id="leaderboard-list">
+
+          </ul>
+        </div>
     </div>
   </div>
 

@@ -6,6 +6,9 @@ let moodTimeout = null;
 let tickRate = 1000;
 let gameLoopInterval = null;
 
+let startTime = null;
+let survivalSeconds = 0;
+
 const petSprite = document.getElementById('pet-sprite');
 const petContainer = document.getElementById('pet-container');
 const batteryFill = document.getElementById('battery-fill');
@@ -18,6 +21,11 @@ const btnFeed = document.getElementById('btn-feed');
 const btnPet = document.getElementById('btn-pet');
 const btnDistract = document.getElementById('btn-distract');
 const modeBtns = document.querySelectorAll('.mode-btn');
+
+// Dynamic Asset Helper
+function getAsset(fileName) {
+  return `/assets/imp/${fileName}`;
+}
 
 const cooldowns = {
   feed: { btn: btnFeed, bar: document.getElementById('cooldown-feed'), time: 7000, active: false },
@@ -56,7 +64,6 @@ function setMood(text, temporary = false) {
     isTempMoodActive = true;
     if (moodTimeout) clearTimeout(moodTimeout);
     
-    // Hold the status text visible for 1.5 seconds before returning to base mood
     moodTimeout = setTimeout(() => {
       isTempMoodActive = false;
       updateBaseMood();
@@ -65,14 +72,12 @@ function setMood(text, temporary = false) {
 }
 
 function updateBaseMood() {
-  // Do not overwrite temporary action/rejection status messages while active
   if (isTempMoodActive) return;
 
   if (!hasHatched) setMood("STATUS: DORMANT");
   else if (currentStage === 2) setMood(doomMeter > 50 ? "MOOD: RESTLESS" : "MOOD: CALM");
   else if (currentStage === 3) setMood("MOOD: ENRAGED");
 }
-
 
 function triggerActionAnimation(tempSrc, duration = 1200) {
   if (!hasHatched || isEvolving) return;
@@ -81,7 +86,7 @@ function triggerActionAnimation(tempSrc, duration = 1200) {
   void petSprite.offsetWidth;
   petSprite.classList.add('hatching');
   setTimeout(() => {
-    if (!isEvolving) petSprite.src = (currentStage === 3) ? '/assets/stage3.png' : '/assets/stage2.png';
+    if (!isEvolving) petSprite.src = (currentStage === 3) ? getAsset('stage3.png') : getAsset('stage2.png');
   }, duration);
 }
 
@@ -103,17 +108,15 @@ function triggerCooldown(key) {
   }, cd.time);
 }
 
-// Action Logic Mapping
-// Action Logic Mapping with 25% Failure Rate
+// Action Logic
 const actionMap = {
   feed: () => {
     if (!hasHatched || cooldowns.feed.active) return;
     
-    // 25% chance to fail (Math.random() < 0.25)
     if (Math.random() < 0.50) {
-      playSound(150, 'sawtooth', 0.2); // Low rejection buzz
+      playSound(150, 'sawtooth', 0.2);
       setMood("STATUS: REJECTED! (0%)", true);
-      triggerActionAnimation('/assets/stage2_reject.png', 1200);
+      triggerActionAnimation(getAsset('stage2_reject.png'), 1200);
       triggerCooldown('feed');
       updateUI();
       return;
@@ -122,7 +125,7 @@ const actionMap = {
     doomMeter = Math.max(0, doomMeter - 10);
     playSound(350, 'sine', 0.1);
     setMood("STATUS: STUFFED (-10%)", true);
-    triggerActionAnimation('/assets/stage2_feed.png');
+    triggerActionAnimation(getAsset('stage2_feed.png'));
     triggerCooldown('feed');
     updateUI();
   },
@@ -131,12 +134,10 @@ const actionMap = {
     if (!hasHatched || cooldowns.pet.active) return;
 
     if (currentStage === 3) {
-      doomMeter = Math.min(100, doomMeter + 10); // Penalty: +10% Doom
+      doomMeter = Math.min(100, doomMeter + 10);
       playSound(100, 'sawtooth', 0.3);
       setMood("STATUS: BITTEN IN RAGE! (+10%)", true);
-      
-      // Flash rejection sprite/rage sprite
-      triggerActionAnimation('/assets/stage3_reject.png', 1200);
+      triggerActionAnimation(getAsset('stage3_reject.png'), 1200);
       triggerCooldown('pet');
       updateUI();
       return;
@@ -145,7 +146,7 @@ const actionMap = {
     if (Math.random() < 0.50) {
       playSound(150, 'sawtooth', 0.2);
       setMood("STATUS: BITTEN! (0%)", true);
-      triggerActionAnimation('/assets/stage2_bitten.png', 1200);
+      triggerActionAnimation(getAsset('stage2_bitten.png'), 1200);
       triggerCooldown('pet');
       updateUI();
       return;
@@ -154,7 +155,7 @@ const actionMap = {
     doomMeter = Math.max(0, doomMeter - 5);
     playSound(450, 'sine', 0.1);
     setMood("STATUS: SQUISHED (-5%)", true);
-    triggerActionAnimation('/assets/stage2_pet.png');
+    triggerActionAnimation(getAsset('stage2_pet.png'));
     triggerCooldown('pet');
     updateUI();
   },
@@ -165,11 +166,11 @@ const actionMap = {
     if (Math.random() < 0.50) {
       playSound(150, 'sawtooth', 0.2);
       setMood("STATUS: IGNORED! (0%)", true);
-      triggerActionAnimation('/assets/stage2_ignore.png', 1200);
+      triggerActionAnimation(getAsset('stage2_ignore.png'), 1200);
       petSprite.classList.add('raging');
-  setTimeout(() => {
-    if (doomMeter < 75) petSprite.classList.remove('raging');
-  }, 400);
+      setTimeout(() => {
+        if (doomMeter < 75) petSprite.classList.remove('raging');
+      }, 400);
       triggerCooldown('distract');
       updateUI();
       return;
@@ -178,7 +179,7 @@ const actionMap = {
     doomMeter = Math.max(0, doomMeter - 15);
     playSound(550, 'sine', 0.1);
     setMood("STATUS: HYPNOTIZED (-15%)", true);
-    triggerActionAnimation('/assets/stage2_distract.png');
+    triggerActionAnimation(getAsset('stage2_distract.png'));
     triggerCooldown('distract');
     updateUI();
   }
@@ -194,13 +195,14 @@ petSprite.addEventListener('click', () => {
     if (promptEl) promptEl.remove();
 
     petSprite.classList.add('hatching');
-    setTimeout(() => { petSprite.src = '/assets/stage1_cracked.png'; }, 300);
+    setTimeout(() => { petSprite.src = getAsset('stage1_cracked.png'); }, 300);
 
     setTimeout(() => {
       hasHatched = true;
+      startTime = Date.now();
       currentStage = 2;
       doomMeter = 0;
-      petSprite.src = '/assets/stage2.png';
+      petSprite.src = getAsset('stage2.png');
       petContainer.className = 'stage-imp-glow';
       petSprite.classList.remove('size-stage1');
       petSprite.classList.add('size-stage2');
@@ -215,10 +217,7 @@ petSprite.addEventListener('click', () => {
   }
 });
 
-// Click Listeners
-
-
-// Drag and Drop (Targeting Image Sprites Only)
+// Drag and Drop
 const draggableIcons = document.querySelectorAll('.pixel-icon-large');
 
 draggableIcons.forEach(icon => {
@@ -241,7 +240,7 @@ petContainer.addEventListener('drop', (e) => {
   }
 });
 
-// Mobile Touch Drag Support
+// Mobile Touch Drag
 let activeTouchAction = null;
 let dragProxy = null;
 
@@ -335,7 +334,7 @@ function updateUI() {
     if (doomMeter < 75) {
       if (currentStage !== 2) {
         currentStage = 2;
-        petSprite.src = '/assets/stage2.png';
+        petSprite.src = getAsset('stage2.png');
         petContainer.className = 'stage-imp-glow';
         petSprite.classList.remove('size-stage1', 'size-stage3');
         petSprite.classList.add('size-stage2');
@@ -344,7 +343,7 @@ function updateUI() {
     } else {
       if (currentStage !== 3) {
         currentStage = 3;
-        petSprite.src = '/assets/stage3.png';
+        petSprite.src = getAsset('stage3.png');
         petContainer.className = 'stage-beast-glow';
         petSprite.classList.remove('size-stage1', 'size-stage2');
         petSprite.classList.add('size-stage3');
@@ -362,17 +361,80 @@ function updateUI() {
   }
 }
 
+function triggerGameOver() {
+  const endTime = Date.now();
+  
+  // Guard against missing startTime if game ends before hatch
+  const start = startTime || Date.now();
+  survivalSeconds = Math.floor((endTime - start) / 1000);
+  
+  const playerName = prompt(`GAME OVER! You survived ${survivalSeconds} seconds. Enter initials (3 letters):`, "AVA");
+  
+  if (playerName) {
+    const formattedName = playerName.substring(0, 3).toUpperCase();
+    submitScore(formattedName, survivalSeconds, "imp");
+  }
+
+  // Trigger OS lock mechanism
+  fetch('/api/lock', { method: 'POST' }).catch(err => console.error(err));
+}
+
 function startGameLoop() {
   if (gameLoopInterval) clearInterval(gameLoopInterval);
   gameLoopInterval = setInterval(() => {
     if (hasHatched && doomMeter < 100) {
       doomMeter++;
       updateUI();
+      
       if (doomMeter === 100) {
-        fetch('/api/lock', { method: 'POST' }).catch(err => console.error(err));
+        clearInterval(gameLoopInterval); // Stop loop on game over
+        triggerGameOver();
       }
     }
   }, tickRate);
 }
-
 startGameLoop();
+
+// Initialize Supabase Client
+const SUPABASE_URL = 'https://qgjgjlfjsrhwlmbytfuy.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFnamdqbGZqc3Jod2xtYnl0ZnV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTk4MTMsImV4cCI6MjEwNDAzNTgxM30.SP-EdsegGzFdOULnWq2rpz5l2aJxlHaXJjEISanPK8k';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+async function submitScore(playerName, time, character) {
+  const { data, error } = await supabaseClient
+    .from('leaderboards')
+    .insert([{ player_name: playerName, survival_time: time, character: character }]);
+
+  if (error) {
+    console.error('Supabase Insert Error:', error.message, error.details);
+  } else {
+    console.log('Score submitted successfully:', data);
+    loadLeaderboard();
+  }
+}
+
+async function loadLeaderboard() {
+  const { data, error } = await supabaseClient
+    .from('leaderboards')
+    .select('player_name, survival_time')
+    .order('survival_time', { ascending: false })
+    .limit(5);
+
+  if (error) {
+    console.error('Supabase Fetch Error:', error.message);
+    return;
+  }
+
+  const listElement = document.getElementById('leaderboard-list');
+  if (listElement && data) {
+    listElement.innerHTML = data.map((entry, idx) => `
+      <li>
+        <span>${idx + 1}. ${(entry.player_name || '---').padEnd(3, ' ')}</span>
+        <span>${entry.survival_time}s</span>
+      </li>
+    `).join('');
+  }
+}
+
+// Initial fetch on app start
+loadLeaderboard();
